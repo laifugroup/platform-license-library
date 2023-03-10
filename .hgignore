@@ -1,0 +1,24 @@
+sdfsdsfd
+:q:q#
+# Copyright (C) 2005 - 2019 Schlichtherle IT Services.
+# All rights reserved. Use is subject to license terms.
+#
+# Eclipse artifacts:
+^(.*/)?\.metadata$
+^(.*/)?\.project$
+^(.*/)?\.classpath$
+^(.*/)?\.settings/
+^(.*/)?\.cache$
+
+# Git artifacts:
+^\.git/
+
+# IntelliJ artifacts:
+^\.idea/
+\.iml$
+
+# Maven artifacts:
+^(.*/)?target/
+
+# NetBeans artifacts (none):
+nbactions.xml

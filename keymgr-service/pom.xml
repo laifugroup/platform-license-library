@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<!--
+  - Copyright (C) 2005 - 2019 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bbbang.parent</groupId>
+        <artifactId>platform-license-library</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>keymgr-service</artifactId>
+
+    <description>The RESTful web service interface for the license consumer application.</description>
+
+    <properties>
+        <mainClass>com.bbbang.parent.keymgr.service.Main</mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>platform-license-library-keymgr</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>global.namespace.truelicense</groupId>
+            <artifactId>truelicense-jax-rs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+    </dependencies>
+</project>

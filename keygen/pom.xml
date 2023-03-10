@@ -1,0 +1,79 @@
+<?xml version='1.0'?>
+<!--
+  - Copyright (C) 2005 - 2019 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bbbang.parent</groupId>
+        <artifactId>platform-license-library</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>platform-license-library-keygen</artifactId>
+
+    <description>The license vendor application alias license key tool.</description>
+
+    <properties>
+        <mainClass>com.bbbang.parent.keygen.Main</mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>global.namespace.truelicense</groupId>
+            <artifactId>${trueLicenseArtifactId}</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>generate-private-key-store</id>
+            <activation>
+                <file>
+                    <missing>${basedir}/src/main/resources/private.ks</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.soebes.maven.plugins</groupId>
+                        <artifactId>iterator-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>iterator</goal>
+                                </goals>
+                                <configuration>
+                                    <content>${editions}</content>
+                                    <pluginExecutors>
+                                        <pluginExecutor>
+                                            <plugin>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>keytool-maven-plugin</artifactId>
+                                            </plugin>
+                                            <goal>generateKeyPair</goal>
+                                            <configuration>
+                                                <alias>${@item@KeyEntryAlias}</alias>
+                                                <dname>${distinguishedName}</dname>
+                                                <keypass>${@item@KeyEntryPassword}</keypass>
+                                                <keystore>${basedir}/src/main/resources/${privateKeyStoreFile}</keystore>
+                                                <storepass>${privateKeyStorePassword}</storepass>
+                                                <storetype>${privateKeyStoreType}</storetype>
+                                                <validity>36500</validity>
+                                            </configuration>
+                                        </pluginExecutor>
+                                    </pluginExecutors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

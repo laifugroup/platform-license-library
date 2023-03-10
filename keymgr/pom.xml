@@ -1,0 +1,239 @@
+<?xml version='1.0'?>
+<!--
+  - Copyright (C) 2005 - 2019 Schlichtherle IT Services.
+  - All rights reserved. Use is subject to license terms.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bbbang.parent</groupId>
+        <artifactId>platform-license-library</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>platform-license-library-keymgr</artifactId>
+
+    <description>The license consumer application.</description>
+
+    <properties>
+        <mainClass>com.bbbang.parent.keymgr.Main</mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>platform-license-library-keygen</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>global.namespace.truelicense</groupId>
+            <artifactId>${trueLicenseArtifactId}</artifactId>
+        </dependency>
+        <!-- This dependency is only required for the "wizard" command of the
+             Main class. -->
+        <dependency>
+            <groupId>global.namespace.truelicense</groupId>
+            <artifactId>truelicense-swing</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>generate-keymgr-guarded-jar</id>
+            <activation>
+                <property>
+                    <name>skipStandaloneJars</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>global.namespace.truelicense</groupId>
+                        <artifactId>truelicense-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>proguard</id>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                                <configuration>
+                                    <injars>
+                                        <injar>${project.build.finalName}-standalone.jar(!module-info.class,!META-INF/maven/**,!META-INF/versions/**)</injar>
+                                    </injars>
+                                    <options>
+                                        <!-- The following options are specific to this sample project.
+                                             You may need to edit them when customizing this sample project: -->
+                                        <option>
+                                            -printseeds proguard_seed.txt
+                                            -printmapping proguard_map.txt
+                                            -dontnote
+                                            -optimizationpasses 3
+                                            -overloadaggressively
+                                            -repackageclasses
+                                            -allowaccessmodification
+
+                                            -keep class !${package}.**,!de.schlichtherle.**,!global.namespace.truelicense.** {
+                                                *;
+                                            }
+                                            -keepclasseswithmembers public class ${package}.** {
+                                                public static void main(java.lang.String[]);
+                                            }
+                                        </option>
+
+                                        <!-- This option excludes the secret FTP marker class from byte code obfuscation.
+                                             You can remove this option if you do not want to provide auto-generated FTP license
+                                             keys; -->
+                                        <!--option>
+                                            -keep class $ftpSecretMarkerClass
+                                        <option-->
+
+                                        <!-- The following options are required for TrueLicense 4: -->
+                                        <option>
+                                            -adaptresourcefilenames
+
+                                            -keepclassmembers class global.namespace.truelicense.api.License {
+                                                public *** get*();
+                                                public void set*(***);
+                                            }
+                                            -keep,allowobfuscation class global.namespace.truelicense.core.LicenseStub
+                                            -keepnames class de.schlichtherle.license.LicenseContent
+                                            -keepclassmembers class global.namespace.truelicense.v2.xml.V2XmlX500PrincipalXmlAdapter {
+                                                &lt;init&gt;();
+                                            }
+
+                                            -keepclassmembers class global.namespace.truelicense.**.*RepositoryModel {
+                                                *;
+                                            }
+                                            -keepclassmembers class de.schlichtherle.xml.GenericCertificate {
+                                                public *** get*();
+                                                public void set*(***);
+                                            }
+                                            -keepnames class de.schlichtherle.xml.GenericCertificate
+
+                                            -keepclassmembers class global.namespace.truelicense.jax.rs.dto.*DTO {
+                                                *;
+                                            }
+                                            -keepclassmembers enum * {
+                                                public static **[] values();
+                                                public static ** valueOf(java.lang.String);
+                                            }
+                                            -keepattributes *Annotation*,Signature
+                                        </option>
+                                    </options>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sf.proguard</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>6.2.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>generate-public-key-store</id>
+            <activation>
+                <file>
+                    <missing>${basedir}/src/main/resources/public.ks</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.soebes.maven.plugins</groupId>
+                        <artifactId>iterator-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>iterator</goal>
+                                </goals>
+                                <configuration>
+                                    <content>${editions}</content>
+                                    <pluginExecutors>
+                                        <pluginExecutor>
+                                            <plugin>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>keytool-maven-plugin</artifactId>
+                                            </plugin>
+                                            <goal>exportCertificate</goal>
+                                            <configuration>
+                                                <alias>${@item@KeyEntryAlias}</alias>
+                                                <file>${project.build.directory}/@item@.cert</file>
+                                                <keystore>${basedir}/../keygen/src/main/resources/${privateKeyStoreFile}</keystore>
+                                                <storepass>${privateKeyStorePassword}</storepass>
+                                                <storetype>${privateKeyStoreType}</storetype>
+                                            </configuration>
+                                        </pluginExecutor>
+                                        <pluginExecutor>
+                                            <plugin>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>keytool-maven-plugin</artifactId>
+                                            </plugin>
+                                            <goal>importCertificate</goal>
+                                            <configuration>
+                                                <alias>${@item@KeyEntryAlias}</alias>
+                                                <file>${project.build.directory}/@item@.cert</file>
+                                                <keystore>${basedir}/src/main/resources/${publicKeyStoreFile}</keystore>
+                                                <noprompt>true</noprompt>
+                                                <storepass>${publicKeyStorePassword}</storepass>
+                                                <storetype>${publicKeyStoreType}</storetype>
+                                            </configuration>
+                                        </pluginExecutor>
+                                    </pluginExecutors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- This profile generates the keystore for use with auto-generated
+             free trial period (FTP) license keys.
+             You can remove this profile or skip the plugin if you do not
+             want to provide auto-generated FTP license keys. -->
+        <profile>
+            <id>generate-ftp-key-store</id>
+            <activation>
+                <file>
+                    <missing>${basedir}/src/main/resources/public.ks</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>keytool-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>generateKeyPair</goal>
+                                </goals>
+                                <configuration>
+                                    <alias>${ftpKeyEntryAlias}</alias>
+                                    <dname>${distinguishedName}</dname>
+                                    <keypass>${ftpKeyEntryPassword}</keypass>
+                                    <keystore>${basedir}/src/main/resources/${ftpKeyStoreFile}</keystore>
+                                    <skip>true</skip>
+                                    <storepass>${ftpKeyStorePassword}</storepass>
+                                    <storetype>${ftpKeyStoreType}</storetype>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
