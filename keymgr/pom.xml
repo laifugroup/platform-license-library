@@ -40,6 +40,44 @@
             <artifactId>truelicense-swing</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--jdk8-->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>6.4.2</version>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-api</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-simple</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.30</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 
     <profiles>

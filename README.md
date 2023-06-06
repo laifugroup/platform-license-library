@@ -3,6 +3,7 @@
 ````ignorelang
 
 build in jdk1.8
+idea 环境设置为jdk11
 
 
 1.  java -jar keymgr.jar install 1541693333435453441.lic
