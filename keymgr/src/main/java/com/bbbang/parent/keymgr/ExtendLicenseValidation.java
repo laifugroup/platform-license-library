@@ -10,6 +10,9 @@ import oshi.hardware.HardwareAbstractionLayer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class ExtendLicenseValidation implements LicenseValidation {
 
@@ -23,18 +26,18 @@ public class ExtendLicenseValidation implements LicenseValidation {
      */
     @Override
     public void validate(License license) throws LicenseValidationException {
-        System.out.println("info->"+license.getInfo());
-        System.out.println("issuer->"+license.getIssuer());
-        System.out.println("subject->"+license.getSubject());
-        System.out.println("consumerType->"+license.getConsumerType());
-        System.out.println("holder->"+license.getHolder());
-        System.out.println("consumerAmount->"+license.getConsumerAmount());
-        System.out.println("issued->"+license.getIssued());
-        System.out.println("notAfter->"+license.getNotAfter());
-        System.out.println("notBefore->"+license.getNotBefore());
+//        System.out.println("info->"+license.getInfo());
+//        System.out.println("issuer->"+license.getIssuer());
+//        System.out.println("subject->"+license.getSubject());
+//        System.out.println("consumerType->"+license.getConsumerType());
+//        System.out.println("holder->"+license.getHolder());
+//        System.out.println("consumerAmount->"+license.getConsumerAmount());
+//        System.out.println("issued->"+license.getIssued());
+//        System.out.println("notAfter->"+license.getNotAfter());
+//        System.out.println("notBefore->"+license.getNotBefore());
 
         if (!Issuer.subject.equals(license.getSubject())){
-            throw new LicenseValidationException((Message) locale -> "[subject]授权主体不合法");
+            throw new LicenseValidationException((Message) locale -> "[subject]授权主体不正确,请联系管理员");
         }
 
         SystemInfo si = new SystemInfo();
@@ -46,24 +49,16 @@ public class ExtendLicenseValidation implements LicenseValidation {
         Object extra=license.getExtra();
         if (extra!=null && extra instanceof HashMap){
             HashMap<String,String> map=(HashMap<String, String>) extra;
-            map.keySet().stream().forEach(new Consumer<String>() {
-                @Override
-                public void accept(String s) {
-                    if (Constants.cpuSerial.equals(s)){
-                        System.out.println("cupId->"+cupId+"  "+map.get(s));
-                            if (!cupId.equals(map.get(s))){
-                              throw new RuntimeException("[CPU]授权硬件不合法");
-                            }
-                    }
-                    if (Constants.mainBoardSerial.equals(s)){
-                        System.out.println("mainBoardSerial->"+mainBoardSerial+"  "+map.get(s));
-                        if (!mainBoardSerial.equals(map.get(s))){
-                            throw new RuntimeException("[mainBoardSerial]授权硬件不合法");
-                        }
-                    }
-                    System.out.println(s+":"+map.get(s));
-                }
-            });
+            String mCupId=map.get(Constants.cpuSerial);
+            String mMainBoardSerial=map.get(Constants.mainBoardSerial);
+
+            if (!cupId.equals(mCupId)){
+                throw new RuntimeException("[CPU]授权过期或不合法,请联系管理员");
+            }
+            if (!mainBoardSerial.equals(mMainBoardSerial)){
+                    throw new RuntimeException("[mainBoard]授权过期或不合法,请联系管理员");
+            }
+            System.out.println("验证成功");
         }
     }
 }
