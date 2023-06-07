@@ -45,38 +45,52 @@
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
             <version>6.4.2</version>
-<!--            <exclusions>-->
+            <exclusions>
 <!--                <exclusion>-->
 <!--                    <groupId>org.slf4j</groupId>-->
 <!--                    <artifactId>slf4j-api</artifactId>-->
 <!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.slf4j</groupId>-->
-<!--                    <artifactId>slf4j-simple</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
+            <version>2.0.5</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.7</version>
             <type>jar</type>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.30</version>
-            <type>jar</type>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax.servlet</groupId>-->
+<!--            <artifactId>javax.servlet-api</artifactId>-->
+<!--            <version>3.1.0</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-            <type>jar</type>
-        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-nop</artifactId>-->
+<!--            <version>1.7.30</version>-->
+<!--            <type>jar</type>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-simple</artifactId>-->
+<!--            <version>1.7.30</version>-->
+<!--            <type>jar</type>-->
+<!--        </dependency>-->
 
     </dependencies>
 
@@ -122,6 +136,7 @@
                                             -keepclasseswithmembers public class ${package}.** {
                                                 public static void main(java.lang.String[]);
                                             }
+
                                         </option>
 
                                         <!-- This option excludes the secret FTP marker class from byte code obfuscation.
@@ -133,6 +148,9 @@
 
                                         <!-- The following options are required for TrueLicense 4: -->
                                         <option>
+                                            -dontwarn jakarta.servlet.**
+                                            -dontwarn jakarta.mail.**
+                                            -dontwarn org.codehaus.**
                                             -adaptresourcefilenames
 
                                             -keepclassmembers class global.namespace.truelicense.api.License {
