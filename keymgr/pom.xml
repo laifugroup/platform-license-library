@@ -63,12 +63,12 @@
             <version>2.0.5</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.7</version>
-            <type>jar</type>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>1.4.7</version>-->
+<!--            <type>jar</type>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>javax.servlet</groupId>-->
@@ -152,6 +152,7 @@
                                             -dontwarn jakarta.mail.**
                                             -dontwarn org.codehaus.**
                                             -adaptresourcefilenames
+                                            -dontwarn  ch.qos.logback.classic.**
 
                                             -keepclassmembers class global.namespace.truelicense.api.License {
                                                 public *** get*();
