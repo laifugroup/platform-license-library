@@ -40,9 +40,9 @@ public class ExtendLicenseValidation implements LicenseValidation {
 
         if (!Issuer.subject.equals(license.getSubject())){
             throw new LicenseValidationException((Message) locale -> "[subject]授权主体不正确,请联系管理员");
-        }else  if (license.getNotBefore()!=null && license.getNotBefore().before(new Date())){
+        }else  if (license.getNotBefore()!=null && license.getNotBefore().after(new Date())){
             throw new LicenseValidationException((Message) locale -> "[subject]授权未生效,请联系管理员");
-        }else  if (license.getNotBefore()!=null && license.getNotAfter().after(new Date())){
+        }else  if (license.getNotAfter()!=null && license.getNotAfter().before(new Date())){
             throw new LicenseValidationException((Message) locale -> "[subject]授权已过期,请联系管理员");
         }
 
