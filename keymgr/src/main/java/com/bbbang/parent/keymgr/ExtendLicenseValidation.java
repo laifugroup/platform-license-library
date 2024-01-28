@@ -35,8 +35,8 @@ public class ExtendLicenseValidation implements LicenseValidation {
 //        System.out.println("holder->"+license.getHolder());
 //        System.out.println("consumerAmount->"+license.getConsumerAmount());
 //        System.out.println("issued->"+license.getIssued());
-        System.out.println("notAfter->"+license.getNotAfter());
-        System.out.println("notBefore->"+license.getNotBefore());
+        //System.out.println("notAfter->"+license.getNotAfter());
+        //System.out.println("notBefore->"+license.getNotBefore());
 
         if (!Issuer.subject.equals(license.getSubject())){
             throw new LicenseValidationException((Message) locale -> "[subject]授权主体不正确,请联系管理员");
@@ -63,7 +63,7 @@ public class ExtendLicenseValidation implements LicenseValidation {
             }else  if (!mainBoardSerial.equals(mMainBoardSerial)){
                 throw new RuntimeException("[mainBoard]序列号不正确,请联系管理员");
             }
-            System.out.println("验证成功");
+            //System.out.println("验证成功");
         }
     }
 
