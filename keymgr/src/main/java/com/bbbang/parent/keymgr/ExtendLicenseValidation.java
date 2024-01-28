@@ -7,6 +7,8 @@ import global.namespace.truelicense.api.i18n.Message;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -33,11 +35,15 @@ public class ExtendLicenseValidation implements LicenseValidation {
 //        System.out.println("holder->"+license.getHolder());
 //        System.out.println("consumerAmount->"+license.getConsumerAmount());
 //        System.out.println("issued->"+license.getIssued());
-//        System.out.println("notAfter->"+license.getNotAfter());
-//        System.out.println("notBefore->"+license.getNotBefore());
+        System.out.println("notAfter->"+license.getNotAfter());
+        System.out.println("notBefore->"+license.getNotBefore());
 
         if (!Issuer.subject.equals(license.getSubject())){
             throw new LicenseValidationException((Message) locale -> "[subject]授权主体不正确,请联系管理员");
+        }else  if (license.getNotBefore()!=null && license.getNotBefore().before(new Date())){
+            throw new LicenseValidationException((Message) locale -> "[subject]授权未生效,请联系管理员");
+        }else  if (license.getNotBefore()!=null && license.getNotAfter().after(new Date())){
+            throw new LicenseValidationException((Message) locale -> "[subject]授权已过期,请联系管理员");
         }
 
         SystemInfo si = new SystemInfo();
@@ -53,12 +59,14 @@ public class ExtendLicenseValidation implements LicenseValidation {
             String mMainBoardSerial=map.get(Constants.mainBoardSerial);
 
             if (!cupId.equals(mCupId)){
-                throw new RuntimeException("[CPU]授权过期或不合法,请联系管理员");
-            }
-            if (!mainBoardSerial.equals(mMainBoardSerial)){
-                    throw new RuntimeException("[mainBoard]授权过期或不合法,请联系管理员");
+                throw new RuntimeException("[CPU]序列号不正确,请联系管理员");
+            }else  if (!mainBoardSerial.equals(mMainBoardSerial)){
+                throw new RuntimeException("[mainBoard]序列号不正确,请联系管理员");
             }
             System.out.println("验证成功");
         }
     }
+
 }
+
+
