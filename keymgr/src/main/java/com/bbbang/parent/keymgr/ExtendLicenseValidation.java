@@ -55,12 +55,17 @@ public class ExtendLicenseValidation implements LicenseValidation {
         Object extra=license.getExtra();
         if (extra!=null && extra instanceof HashMap){
             HashMap<String,String> map=(HashMap<String, String>) extra;
-            String mCupId=map.get(Constants.cpuSerial);
-            String mMainBoardSerial=map.get(Constants.mainBoardSerial);
+            String mCupId=map.get(LicenseConstants.cpuSerial);
+            String mMainBoardSerial=map.get(LicenseConstants.mainBoardSerial);
+
 
             if (!cupId.equals(mCupId)){
+                System.out.println("cupId->"+cupId);
+                System.out.println("mCupId->"+mCupId);
                 throw new RuntimeException("[CPU]序列号不正确,请联系管理员");
             }else  if (!mainBoardSerial.equals(mMainBoardSerial)){
+                System.out.println("mainBoardSerial->"+mainBoardSerial);
+                System.out.println("mMainBoardSerial->"+mMainBoardSerial);
                 throw new RuntimeException("[mainBoard]序列号不正确,请联系管理员");
             }
             //System.out.println("验证成功");
